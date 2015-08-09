@@ -1,0 +1,6 @@
+build/*
+gradle/*
+gradlew*
+.idea
+.gradle
+filmeckiy_bot.iml
