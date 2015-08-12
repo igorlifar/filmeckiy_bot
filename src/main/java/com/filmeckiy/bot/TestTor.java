@@ -40,7 +40,7 @@ public class TestTor {
             context.setAttribute("socks.address", socksaddr);
 
             HttpHost target = new HttpHost("kinopoisk.ru", 80, "http");
-            HttpGet request = new HttpGet("/");
+            HttpGet request = new HttpGet("/film/813476/");
 
             request.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
             request.setHeader(
