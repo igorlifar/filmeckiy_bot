@@ -47,6 +47,12 @@ public class TestTor {
             HttpHost target = new HttpHost("kinopoisk.ru", 80, "http");
             HttpGet request = new HttpGet("/");
 
+            request.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            request.setHeader(
+                    "User-Agent",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/600.4.10 " +
+                            "(KHTML, like Gecko) Version/8.0.4 Safari/600.4.10");
+
             System.out.println("Executing request " + request + " to " + target + " via SOCKS proxy " + socksaddr);
             CloseableHttpResponse response = httpclient.execute(target, request, context);
             try {
