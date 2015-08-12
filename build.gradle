@@ -34,5 +34,5 @@ dependencies {
 
     compile 'org.jsoup:jsoup:1.8.3'
 
-    runtime 'org.mongodb:mongodb-driver:3.0.2'
+    compile 'org.mongodb:mongodb-driver:3.0.2'
 }
