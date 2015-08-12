@@ -20,7 +20,7 @@ public class KpCrawlMain {
 
         Option<String> next = kpClient.popFromQueue();
         logger.info("Next: {}", next);
-        long sleepTime = 1;
+        long sleepTime = 1000;
         while (next.isDefined()) {
             List<String> movieUrls;
             try {
