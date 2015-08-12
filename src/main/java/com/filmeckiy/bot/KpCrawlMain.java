@@ -20,15 +20,23 @@ public class KpCrawlMain {
 
         Option<String> next = kpClient.popFromQueue();
         logger.info("Next: {}", next);
+        long sleepTime = 1;
         while (next.isDefined()) {
             List<String> movieUrls;
             try {
                 movieUrls = kpClient.getMovieUrls(next.get());
             } catch (Exception e) {
                 kpClient.addToQueue(next.get());
-
-                throw e;
+                logger.info("Going to sleep for {} ms", sleepTime);
+                try {
+                    Thread.sleep(sleepTime);
+                    sleepTime = sleepTime * 2;
+                } catch (InterruptedException e1) {
+                    throw new RuntimeException(e1);
+                }
+                continue;
             }
+            sleepTime = 1;
 
             logger.info("Found {} movie urls", movieUrls.size());
             for (String movieUrl : movieUrls) {
