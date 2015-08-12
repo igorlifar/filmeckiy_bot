@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import java.util.List;
+
 /**
  * @author egor
  */
@@ -22,17 +24,8 @@ public class FixPagesCacheMain {
                 .find();
 
         for (Document doc : iter) {
-            String url = doc.getString("_id");
-            if (doc.getString("text").contains("с вашего IP-адреса поступило необычно много запросов")) {
-                logger.info("Found banned page in cache: {}", url);
-
-                MongoUtils.getClient()
-                        .getDatabase(MongoUtils.DB_NAME)
-                        .getCollection("pages_cache")
-                        .deleteOne(new Document("_id", url));
-
-                kpClient.addToQueue(url);
-            }
+            List<String> urls = kpClient.getMovieUrls(doc.getString("_id"));
+            urls.forEach(kpClient::addToQueue);
         }
     }
 }
