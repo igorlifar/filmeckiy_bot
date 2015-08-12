@@ -7,23 +7,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 /**
  * @author egor
@@ -33,12 +26,14 @@ public class TestTor {
 
     public static void main(String[] args)throws Exception {
         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", new MyConnectionSocketFactory())
+                .register("http", new TorConnectionSocketFactory())
                 .build();
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
+
         CloseableHttpClient httpclient = HttpClients.custom()
                 .setConnectionManager(cm)
                 .build();
+
         try {
             InetSocketAddress socksaddr = new InetSocketAddress("localhost", 9050);
             HttpClientContext context = HttpClientContext.create();
@@ -71,39 +66,4 @@ public class TestTor {
         }
     }
 
-    static class MyConnectionSocketFactory implements ConnectionSocketFactory {
-
-        @Override
-        public Socket createSocket(final HttpContext context) throws IOException {
-            InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
-            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-            return new Socket(proxy);
-        }
-
-        @Override
-        public Socket connectSocket(
-                final int connectTimeout,
-                final Socket socket,
-                final HttpHost host,
-                final InetSocketAddress remoteAddress,
-                final InetSocketAddress localAddress,
-                final HttpContext context) throws IOException, ConnectTimeoutException {
-            Socket sock;
-            if (socket != null) {
-                sock = socket;
-            } else {
-                sock = createSocket(context);
-            }
-            if (localAddress != null) {
-                sock.bind(localAddress);
-            }
-            try {
-                sock.connect(remoteAddress, connectTimeout);
-            } catch (SocketTimeoutException ex) {
-                throw new ConnectTimeoutException(ex, host, remoteAddress.getAddress());
-            }
-            return sock;
-        }
-
-    }
 }

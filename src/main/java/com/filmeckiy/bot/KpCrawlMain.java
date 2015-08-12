@@ -14,6 +14,9 @@ public class KpCrawlMain {
     private static final Logger logger = LogManager.getLogger(KpCrawlMain.class);
 
     public static void main(String[] args) {
+
+
+
         KpClient kpClient = new KpClient();
 
         kpClient.addToQueue("http://www.kinopoisk.ru/");

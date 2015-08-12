@@ -1,5 +1,6 @@
 package com.filmeckiy.bot.kp;
 
+import com.filmeckiy.bot.TorConnectionSocketFactory;
 import com.filmeckiy.bot.utils.Option;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -7,10 +8,18 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -21,6 +30,7 @@ import javax.print.Doc;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,6 +44,8 @@ public class KpClient {
     private static final Logger logger = LogManager.getLogger(KpClient.class);
 
     private final CloseableHttpClient httpClient;
+    private final CloseableHttpClient torClient;
+
     private final MongoClient mongoClient;
 
     private final HashSet<String> urlsInQueue;
@@ -55,21 +67,39 @@ public class KpClient {
             this.urlsInQueue.add(doc.getString("_id"));
         }
         logger.info("Urls in queue: {}", this.urlsInQueue.size());
+
+
+        Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", new TorConnectionSocketFactory())
+                .build();
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
+
+        this.torClient = HttpClients.custom()
+                .setConnectionManager(cm)
+                .build();
     }
 
     public String getText(String url) {
         logger.info("Going to execute request: {}", url);
-        HttpGet request = new HttpGet(url);
+
+        HttpGet request = new HttpGet(url.split("/", 4)[3]);
+        HttpHost httpHost = new HttpHost("kinopoisk.ru");
+
+//        HttpGet request = new HttpGet(url);
         request.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         request.setHeader(
                 "User-Agent",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/600.4.10 " +
                         "(KHTML, like Gecko) Version/8.0.4 Safari/600.4.10");
 
+        InetSocketAddress socksaddr = new InetSocketAddress("localhost", 9050);
+        HttpClientContext context = HttpClientContext.create();
+        context.setAttribute("socks.address", socksaddr);
+
         HttpEntity entity;
         StringWriter stringWriter = new StringWriter();
 
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        try (CloseableHttpResponse response = torClient.execute(httpHost, request, context)) {
             entity = response.getEntity();
             logger.info("Status line: {}", response.getStatusLine());
             IOUtils.copy(new InputStreamReader(entity.getContent(), "windows-1251"), stringWriter);
