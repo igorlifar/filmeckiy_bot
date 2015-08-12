@@ -1,5 +1,6 @@
 package com.filmeckiy.bot;
 
+import com.filmeckiy.bot.kp.KpClient;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ReadPreference;
@@ -8,6 +9,10 @@ import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+
+import java.util.HashSet;
 
 /**
  * @author lifar
@@ -16,24 +21,19 @@ public class Main3 {
     private static final Logger logger = LogManager.getLogger(Main3.class);
 
     public static void main(String[] args) {
-        MongoClientOptions mongoOptions = MongoClientOptions.builder()
-                .connectionsPerHost(50)
-                .connectTimeout(120000)
-                .socketTimeout(120000)
-                .maxWaitTime(120000)
-                .threadsAllowedToBlockForConnectionMultiplier(20)
-                .writeConcern(new WriteConcern(1, 2500, false))
-                .readPreference(ReadPreference.primaryPreferred())
-                .build();
+        KpClient client = new KpClient();
 
-        MongoClient client = new MongoClient("server.indieworkshop.ru", mongoOptions);
+        String cachedText = client.getCachedOrUpdate("http://www.kinopoisk.ru/film/407636/");
 
-        MongoDatabase db = client.getDatabase("filmeckiy_bot");
+        logger.info("Text size: {}", cachedText.length());
 
-        db.createCollection("movies");
+        Elements elements = Jsoup.parse(cachedText).select("a[href^=\"/film/\"]");
 
-        Document object = new Document("foo", "bar").append("key", "val").append("_id", 10);
+        HashSet<Integer> ids = new HashSet<>();
+        elements.forEach(e -> ids.add(Integer.parseInt(e.attr("href").split("/")[2])));
 
-        db.getCollection("movies").insertOne(object);
+//        new Document("123", new Document)
+
+        ids.forEach(id -> client.getCachedOrUpdate("http://www.kinopoisk.ru/film/" + String.valueOf(id) + "/"));
     }
 }

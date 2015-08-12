@@ -31,7 +31,6 @@ public class Main2 {
             CloseableHttpClient client = HttpClients.createDefault();
 
             HttpEntity entity = client.execute(request).getEntity();
-
             StringWriter stringWriter = new StringWriter();
             IOUtils.copy(new InputStreamReader(entity.getContent(), "windows-1251"), stringWriter);
 
