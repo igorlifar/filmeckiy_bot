@@ -24,7 +24,7 @@ public class FixPagesCacheMain {
                 .find();
 
         for (Document doc : iter) {
-            List<String> urls = kpClient.getMovieUrls(doc.getString("_id"));
+            List<String> urls = kpClient.getBfsUrls(doc.getString("_id"));
             urls.forEach(kpClient::addToQueue);
         }
     }

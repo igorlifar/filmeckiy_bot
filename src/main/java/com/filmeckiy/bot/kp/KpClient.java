@@ -193,9 +193,17 @@ public class KpClient {
         return Option.some(url);
     }
 
-    public List<String> getMovieUrls(String url) {
+    public List<String> getBfsUrls(String url) {
         String text = getCachedOrUpdate(url);
 
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(getMovieUrls(text));
+        result.addAll(getActorUrls(text));
+
+        return result;
+    }
+
+    public List<String> getMovieUrls(String text) {
         Elements elements = Jsoup.parse(text).select("a[href^=\"/film/\"]");
 
         HashSet<Integer> ids = new HashSet<>();
@@ -203,6 +211,17 @@ public class KpClient {
 
         ArrayList<String> result = new ArrayList<>();
         ids.forEach(id -> result.add(String.format("http://www.kinopoisk.ru/film/%d/", id)));
+        return result;
+    }
+
+    public List<String> getActorUrls(String text) {
+        Elements elements = Jsoup.parse(text).select("#actorList a[href^=\"/name/\"]");
+
+        HashSet<Integer> ids = new HashSet<>();
+        elements.forEach(e -> ids.add(Integer.parseInt(e.attr("href").split("/")[2])));
+
+        ArrayList<String> result = new ArrayList<>();
+        ids.forEach(id -> result.add(String.format("http://www.kinopoisk.ru/name/%d/", id)));
         return result;
     }
 }

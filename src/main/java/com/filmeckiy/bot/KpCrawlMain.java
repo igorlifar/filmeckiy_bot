@@ -16,7 +16,13 @@ public class KpCrawlMain {
     public static void main(String[] args) {
         KpClient kpClient = new KpClient();
 
+        kpClient.addToQueue("http://www.kinopoisk.ru/");
         kpClient.addToQueue("http://www.kinopoisk.ru/top/");
+        kpClient.addToQueue("http://www.kinopoisk.ru/comingsoon/");
+        kpClient.addToQueue("http://www.kinopoisk.ru/box/");
+        kpClient.addToQueue("http://www.kinopoisk.ru/afisha/new/");
+        kpClient.addToQueue("http://www.kinopoisk.ru/reviews/");
+        kpClient.addToQueue("http://www.kinopoisk.ru/premiere/ru/");
 
         Option<String> next = kpClient.popFromQueue();
         logger.info("Next: {}", next);
@@ -24,7 +30,7 @@ public class KpCrawlMain {
         while (next.isDefined()) {
             List<String> movieUrls;
             try {
-                movieUrls = kpClient.getMovieUrls(next.get());
+                movieUrls = kpClient.getBfsUrls(next.get());
             } catch (Exception e) {
                 kpClient.addToQueue(next.get());
                 logger.info("Going to sleep for {} ms", sleepTime);
