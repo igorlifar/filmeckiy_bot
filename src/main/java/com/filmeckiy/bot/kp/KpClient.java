@@ -82,7 +82,7 @@ public class KpClient {
     public String getText(String url) {
         logger.info("Going to execute request: {}", url);
 
-        HttpGet request = new HttpGet(url.split("/", 4)[3]);
+        HttpGet request = new HttpGet("/" + url.split("/", 4)[3]);
         HttpHost httpHost = new HttpHost("www.kinopoisk.ru", 80, "http");
 
 //        HttpGet request = new HttpGet(url);
@@ -102,6 +102,9 @@ public class KpClient {
         try (CloseableHttpResponse response = torClient.execute(httpHost, request, context)) {
             entity = response.getEntity();
             logger.info("Status line: {}", response.getStatusLine());
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new RuntimeException("wtf");
+            }
             IOUtils.copy(new InputStreamReader(entity.getContent(), "windows-1251"), stringWriter);
         } catch (IOException e) {
             throw new RuntimeException(e);
