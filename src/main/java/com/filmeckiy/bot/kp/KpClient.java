@@ -83,7 +83,7 @@ public class KpClient {
         logger.info("Going to execute request: {}", url);
 
         HttpGet request = new HttpGet(url.split("/", 4)[3]);
-        HttpHost httpHost = new HttpHost("kinopoisk.ru");
+        HttpHost httpHost = new HttpHost("www.kinopoisk.ru", 80, "http");
 
 //        HttpGet request = new HttpGet(url);
         request.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
