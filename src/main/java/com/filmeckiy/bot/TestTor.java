@@ -1,5 +1,6 @@
 package com.filmeckiy.bot;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -17,6 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
@@ -49,7 +52,11 @@ public class TestTor {
             try {
                 System.out.println("----------------------------------------");
                 System.out.println(response.getStatusLine());
-                EntityUtils.consume(response.getEntity());
+
+                StringWriter stringWriter = new StringWriter();
+                IOUtils.copy(new InputStreamReader(response.getEntity().getContent(), "windows-1251"), stringWriter);
+
+                System.out.println(stringWriter.toString());
             } finally {
                 response.close();
             }
