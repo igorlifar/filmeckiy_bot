@@ -21,7 +21,15 @@ public class KpCrawlMain {
         Option<String> next = kpClient.popFromQueue();
         logger.info("Next: {}", next);
         while (next.isDefined()) {
-            List<String> movieUrls = kpClient.getMovieUrls(next.get());
+            List<String> movieUrls;
+            try {
+                movieUrls = kpClient.getMovieUrls(next.get());
+            } catch (Exception e) {
+                kpClient.addToQueue(next.get());
+
+                throw e;
+            }
+
             logger.info("Found {} movie urls", movieUrls.size());
             for (String movieUrl : movieUrls) {
                 kpClient.addToQueue(movieUrl);
