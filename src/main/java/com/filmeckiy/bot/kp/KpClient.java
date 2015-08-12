@@ -78,6 +78,12 @@ public class KpClient {
         }
 
         String result = stringWriter.toString();
+
+        if (result.contains("с вашего IP-адреса поступило необычно много запросов")) {
+            logger.warn("NAS ZABANILI");
+            throw new RuntimeException("zabanili");
+        }
+
         logger.info("Text size: {}", result.length());
         return result;
     }
