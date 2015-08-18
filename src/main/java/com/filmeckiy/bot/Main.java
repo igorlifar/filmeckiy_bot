@@ -50,7 +50,7 @@ public class Main {
             CloseableHttpClient client = HttpClients.createDefault();
 
             HttpGet get = new HttpGet(
-                    "https://api.telegram.org/bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/getUpdates&offset="
+                    "https://api.telegram.org/bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/getUpdates?offset="
                             + String.valueOf(previousMaxUpdateId + 1));
 
             try {
