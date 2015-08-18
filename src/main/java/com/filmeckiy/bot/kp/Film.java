@@ -126,6 +126,53 @@ public class Film {
         addFilmToMongo(film, collection);
     }
 
+    private static String drawRating(double rating) {
+        String x1 = "\uD83C\uDF15";
+        String x2 = "\uD83C\uDF16";
+        String x3 = "\uD83C\uDF17";
+        String x4 = "\uD83C\uDF18";
+        String x5 = "\uD83C\uDF11";
+
+        String result = "";
+
+        int times = -1;
+        while (true) {
+            times += 1;
+
+            if (rating >= 2.0) {
+                result += x1;
+                rating -= 2.0;
+                continue;
+            }
+
+            if (rating >= 1.5) {
+                result += x2;
+                rating -= 1.5;
+                continue;
+            }
+
+            if (rating >= 1.0) {
+                result += x3;
+                rating -= 1.0;
+                continue;
+            }
+
+            if (rating >= 0.5) {
+                result += x4;
+                rating -= 0.5;
+                continue;
+            }
+
+            break;
+        }
+
+        while (times < 5) {
+            result += x5;
+            times += 1;
+        }
+
+        return result;
+    }
 
     public static String getText(Film film) {
         if (film == null) {
@@ -134,6 +181,13 @@ public class Film {
         String ans = "";
         ans += film.title;
         ans += "\n";
+
+        ans += film.kpRating.getOrElse(0.).toString();
+        if (film.kpRating.isDefined()) {
+            ans += drawRating(film.kpRating.get());
+        }
+        ans += "\n";
+
         ans += film.director.getOrElse("");
         ans += "\n";
         ans += film.year.getOrElse("");
@@ -142,14 +196,7 @@ public class Film {
         ans += "\n";
         ans += film.slogan.getOrElse("");
         ans += "\n";
-        ans += film.kpRating.getOrElse(0.).toString();
-        if (film.kpRating.isDefined()) {
-            ans += " ";
-            for (int i = 1; i < (film.kpRating.get() + 1) / 2; i++) {
-                ans += "\u2B50️";
-            }
-        }
-        ans += "\n";
+
         for (String s : film.actors) {
             ans += s + ' ';
         }
