@@ -184,7 +184,7 @@ public class Film {
         String countriesLine = film.countries.isEmpty() ? "" : ", " + formatStringList(film.countries);
         ans += String.format("%s (%s%s)\n", film.title, film.year.getOrElse("?"), countriesLine);
         if (!film.genres.isEmpty()) {
-            ans += String.format("%s\n", formatStringList(film.actors));
+            ans += String.format("%s\n", formatStringList(film.genres));
         }
 
         if (film.kpRating.isDefined()) {
@@ -196,7 +196,7 @@ public class Film {
         }
 
         if (!film.actors.isEmpty()) {
-            ans += String.format("В ролях: %s\n\n", formatStringList(film.actors));
+            ans += String.format("В ролях: %s\n\n", formatStringList(take(film.actors, 5)));
         }
 
         ans += film.description.getOrElse("");
@@ -209,9 +209,18 @@ public class Film {
     private static String formatStringList(List<String> list) {
         String actorsLine = list.get(0);
         for (int i = 1; i < list.size(); i++) {
-            actorsLine += String.format("%s, ", list.get(i));
+            actorsLine += String.format(", %s", list.get(i));
         }
         return actorsLine;
+    }
+
+    public static <T> List<T> take(List<T> list, int k) {
+        ArrayList<T> result = new ArrayList<>();
+        for (int i = 0; i < Math.min(k, list.size()); i++) {
+            result.add(list.get(i));
+        }
+
+        return result;
     }
 
     public static void addFilmToMongo(Film film, MongoCollection<org.bson.Document> collection) {
