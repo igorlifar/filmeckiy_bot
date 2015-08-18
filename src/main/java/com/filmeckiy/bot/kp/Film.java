@@ -182,7 +182,8 @@ public class Film {
         }
         String ans = "";
         String countriesLine = film.countries.isEmpty() ? "" : ", " + formatStringList(film.countries);
-        ans += String.format("%s (%s%s)\n", film.title, film.year.getOrElse("?"), countriesLine);
+        ans += String.format("%s\n", film.title);
+        ans += String.format("%s%s\n", film.year.getOrElse("?"), countriesLine);
         if (!film.genres.isEmpty()) {
             ans += String.format("%s\n", formatStringList(film.genres));
         }
@@ -205,7 +206,6 @@ public class Film {
 
         ans += film.description.getOrElse("");
         ans += "\n\n";
-
 
         ans += String.format("http://www.kinopoisk.ru/film/%d/", film.id);
         return ans;
