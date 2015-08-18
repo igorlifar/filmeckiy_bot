@@ -145,7 +145,7 @@ public class Film {
         ans += film.kpRating.getOrElse(0.).toString();
         if (film.kpRating.isDefined()) {
             ans += " ";
-            for (int i = 0; i < (film.kpRating.get() + 1) / 2; i++) {
+            for (int i = 1; i < (film.kpRating.get() + 1) / 2; i++) {
                 ans += "\u2B50️";
             }
         }
