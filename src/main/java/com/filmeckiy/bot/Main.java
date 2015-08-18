@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.filmeckiy.bot.kp.Film;
+import com.filmeckiy.bot.kp.MongoUtils;
+import com.mongodb.client.FindIterable;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 
 /**
  * @author lifar
@@ -24,7 +29,20 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        logger.info("Lol privetik");
+        logger.info("Lol, privetik");
+
+        HashMap<String, Film> titleToFilm = new HashMap<>();
+
+        FindIterable<Document> documents = MongoUtils.getClient()
+                .getDatabase(MongoUtils.DB_NAME)
+                .getCollection("movies")
+                .find();
+
+        for (org.bson.Document doc : documents) {
+            Film filmec = Film.getMoviefromDocument(doc);
+            titleToFilm.put(filmec.title, filmec);
+        }
+        logger.info("Read {} movies", titleToFilm.size());
 
         long previousMaxUpdateId = 0;
 
@@ -64,6 +82,8 @@ public class Main {
 
                     long from = update.path("message").path("from").path("id").longValue();
                     String text = update.path("message").path("text").textValue();
+                    String newText = Film.getText(titleToFilm.get(text));
+
 
                     logger.info("Update id: {}, from: {}, text: {}", updateId, from, text);
 
@@ -73,7 +93,7 @@ public class Main {
                             .setHost("api.telegram.org/")
                             .setPath("bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/sendMessage")
                             .setParameter("chat_id", String.valueOf(from))
-                            .setParameter("text", "reply: " + text);
+                            .setParameter("text", "reply: " + newText);
 
                     URI uri;
                     try {

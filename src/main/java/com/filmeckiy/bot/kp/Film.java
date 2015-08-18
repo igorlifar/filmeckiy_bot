@@ -127,6 +127,39 @@ public class Film {
         addFilmToMongo(film, collection);
     }
 
+
+    public static String getText(Film film) {
+        if (film == null) {
+            return "NULL";
+        }
+        String ans = "";
+        ans += film.title;
+        ans += "\n";
+        ans += film.director.getOrElse("");
+        ans += "\n";
+        ans += film.year.getOrElse("");
+        ans += "\n";
+        ans += film.description.getOrElse("");
+        ans += "\n";
+        ans += film.slogan.getOrElse("");
+        ans += "\n";
+        ans += film.kpRating.getOrElse(-1.0).toString();
+        ans += "\n";
+        for (String s : film.actors) {
+            ans += s + ' ';
+        }
+        ans += "\n";
+        for (String s : film.genres) {
+            ans += s + ' ';
+        }
+        ans += "\n";
+        for (String s : film.countries) {
+            ans += s + ' ';
+        }
+        ans += "\n";
+        return ans;
+    }
+
     public static void addFilmToMongo(Film film, MongoCollection<org.bson.Document> collection) {
         org.bson.Document document = new org.bson.Document()
                 .append("_id", film.id)
@@ -160,19 +193,8 @@ public class Film {
         }
     }
 
-    public static Option<Film> getMoviefromMongo(long id) {
-        FindIterable<org.bson.Document> documents = MongoUtils.getClient()
-                .getDatabase(MongoUtils.DB_NAME)
-                .getCollection("movies")
-                .find(new org.bson.Document("_id", id));
-        org.bson.Document doc = documents.first();
-        if (doc == null) {
-            return Option.none();
-        }
-
-        logger.info(doc);
-
-
+    public static Film getMoviefromDocument(org.bson.Document doc) {
+        long id = doc.getLong("_id");
         String title = doc.getString("title");
         String director = doc.getString("director");
         Option<String> directorO = director == null ? Option.none() : Option.some(director);
@@ -184,22 +206,31 @@ public class Film {
         Option<String> descriptionO = description == null ? Option.none() : Option.some(description);
         Double kpRating = doc.getDouble("kpRating");
         Option<Double> kpRatingO = kpRating == null ? Option.none() : Option.some(kpRating);
-        int f = doc.get("actors", List.class).size();
         List<String> actors = new ArrayList<>();
-       // doc.get("actors", BsonArray.class).get(0).asString();
-        for (int i = 0; i < f; i++) {
+        for (int i = 0; i < doc.get("actors", List.class).size(); i++) {
             actors.add(doc.get("actors", List.class).get(i).toString());
         }
         List<String> genres = new ArrayList<>();
-        // doc.get("actors", BsonArray.class).get(0).asString();
-        for (int i = 0; i < f; i++) {
-            boolean genres1 = genres.add(doc.get("genres", List.class).get(i).toString());
+        for (int i = 0; i < doc.get("genres", List.class).size(); i++) {
+            genres.add(doc.get("genres", List.class).get(i).toString());
         }
         List<String> countries = new ArrayList<>();
-        // doc.get("actors", BsonArray.class).get(0).asString();
-        for (int i = 0; i < f; i++) {
+        for (int i = 0; i < doc.get("countries", List.class).size(); i++) {
             countries.add(doc.get("countries", List.class).get(i).toString());
         }
-        return Option.some(new Film(id, title, yearO, directorO, descriptionO, sloganO, kpRatingO, actors, genres, countries));
+        return new Film(id, title, yearO, directorO, descriptionO, sloganO, kpRatingO, actors, genres, countries);
+    }
+
+    public static Option<Film> getMoviefromMongo(long id) {
+        FindIterable<org.bson.Document> documents = MongoUtils.getClient()
+                .getDatabase(MongoUtils.DB_NAME)
+                .getCollection("movies")
+                .find(new org.bson.Document("_id", id));
+        org.bson.Document doc = documents.first();
+        if (doc == null) {
+            return Option.none();
+        }
+        logger.info(doc);
+        return Option.some(getMoviefromDocument(doc));
     }
 }
