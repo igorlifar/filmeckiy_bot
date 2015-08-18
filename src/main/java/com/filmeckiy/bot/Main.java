@@ -94,7 +94,13 @@ public class Main {
         List<Film> movies = new ArrayList<>();
 
         for (org.bson.Document doc : documents) {
-            Film filmec = Film.getMoviefromDocument(doc);
+            Film filmec;
+            try {
+                filmec = Film.getMoviefromDocument(doc);
+            } catch (Exception e) {
+                logger.error("Failed on film: {} {}", doc.toJson());
+                continue;
+            }
             if (filmec.year.isDefined() && !filmec.year.get().equals("-") && Long.parseLong(filmec.year.get()) >= 1975) {
                 movies.add(filmec);
             }

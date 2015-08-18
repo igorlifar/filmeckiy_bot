@@ -1,6 +1,8 @@
 package com.filmeckiy.bot;
 
-import com.filmeckiy.bot.kp.KpClient;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.filmeckiy.bot.kp.MongoUtils;
 import com.mongodb.client.FindIterable;
 import org.apache.logging.log4j.LogManager;
@@ -9,11 +11,6 @@ import org.bson.Document;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.security.x509.AttributeNameEnumeration;
-
-import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author egor
@@ -84,7 +81,7 @@ public class ShowMoviesMain {
                     }
                 }
             }
-            double kpRating = Double.parseDouble(rating);
+//            double kpRating = Double.parseDouble(rating);
 
             logger.info("{}:", url);
             logger.info("{}", title);
@@ -94,7 +91,7 @@ public class ShowMoviesMain {
             logger.info("{}", director);
             logger.info("{}", actors);
             logger.info(genres);
-            logger.info("Kinopoisk rating: {}", kpRating);
+            logger.info("Kinopoisk rating: {}", 0.1);
             logger.info("Description:");
             logger.info("{}", description);
         }
