@@ -167,10 +167,10 @@ public class Main {
                     ObjectNode objectNode = om.createObjectNode();
                     ArrayNode arrayNode = om.createArrayNode();
 
-                    arrayNode.add(om.createArrayNode().add("/cancel"));
-                    for (int j = 0; j < 5; j++) {
+                    for (int j = 0; j < 3; j++) {
                         arrayNode.add(om.createArrayNode().add(tupleList.get(j)._2.title));
                     }
+                    arrayNode.add(om.createArrayNode().add("/cancel"));
 
                     objectNode.set("keyboard", arrayNode);
                     objectNode.put("one_time_keyboard", true);
