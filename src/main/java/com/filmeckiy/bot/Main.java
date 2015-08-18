@@ -49,8 +49,9 @@ public class Main {
         while (true) {
             CloseableHttpClient client = HttpClients.createDefault();
 
-            HttpGet get =
-                    new HttpGet("https://api.telegram.org/bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/getUpdates");
+            HttpGet get = new HttpGet(
+                    "https://api.telegram.org/bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/getUpdates&offset="
+                            + String.valueOf(previousMaxUpdateId + 1));
 
             try {
                 CloseableHttpResponse result = client.execute(get);
@@ -115,6 +116,12 @@ public class Main {
                 }
 
             } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
