@@ -191,6 +191,10 @@ public class Film {
             ans += String.format("%.1f %s\n\n", film.kpRating.get(), drawRating(film.kpRating.get()));
         }
 
+        if (film.slogan.isDefined()) {
+            ans += String.format("%s\n\n", film.slogan.get());
+        }
+
         if (film.director.isDefined()) {
             ans += String.format("Режиссер: %s\n", film.director.get());
         }
@@ -200,9 +204,10 @@ public class Film {
         }
 
         ans += film.description.getOrElse("");
-        ans += "\n";
-        ans += film.slogan.getOrElse("");
-        ans += "\n";
+        ans += "\n\n";
+
+
+        ans += String.format("http://www.kinopoisk.ru/film/%d/", film.id);
         return ans;
     }
 
