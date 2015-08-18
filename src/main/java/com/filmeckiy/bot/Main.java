@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +30,38 @@ import org.bson.Document;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
+    public static int levenshtein(String a, String b) {
+        int[][] m = new int[a.length() + 1][b.length() + 1];
+        for (int i = 0; i <= a.length(); i++) {
+            for (int j = 0; j <= b.length(); j++) {
+                m[i][j] = 1000000;
+            }
+        }
+        m[0][0] = 0;
+        for (int i = 0; i <= a.length(); i++) {
+            for (int j = 0; j <= b.length(); j++) {
+                if (a.length() == i && b.length() == j) {
+                    continue;
+                }
+                if (a.length() == i) {
+                    m[i][j + 1] = Math.min(m[i][j + 1], m[i][j] + 1);
+                    continue;
+                }
+                if (b.length() == j) {
+                    m[i + 1][j] = Math.min(m[i + 1][j], m[i][j] + 1);
+                    continue;
+                }
+                m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j] + 2);
+                if (a.charAt(i) == b.charAt(j)) {
+                    m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j]);
+                }
+                m[i + 1][j] = Math.min(m[i + 1][j], m[i][j] + 1);
+                m[i][j + 1] = Math.min(m[i][j + 1], m[i][j] + 1);
+            }
+        }
+        return m[a.length()][b.length()];
+    }
+
     public static void main(String[] args) {
         logger.info("Lol, privetik");
 
@@ -38,9 +72,12 @@ public class Main {
                 .getCollection("movies")
                 .find();
 
+        List<Film> movies = new ArrayList<>();
+
         for (org.bson.Document doc : documents) {
             Film filmec = Film.getMoviefromDocument(doc);
-            titleToFilm.put(filmec.title, filmec);
+//            titleToFilm.put(filmec.title, filmec);
+            movies.add(filmec);
         }
         logger.info("Read {} movies", titleToFilm.size());
 
@@ -83,7 +120,19 @@ public class Main {
 
                     long from = update.path("message").path("from").path("id").longValue();
                     String text = update.path("message").path("text").textValue();
-                    String newText = Film.getText(titleToFilm.get(text));
+
+                    int minDist = 1000;
+                    Film res = null;
+                    for (Film film : movies) {
+                        int dist = levenshtein(text, film.title);
+
+                        if (dist < minDist) {
+                            minDist = dist;
+                            res = film;
+                        }
+                    }
+
+                    String newText = Film.getText(res);
 
 
                     logger.info("Update id: {}, from: {}, text: {}", updateId, from, text);
@@ -94,7 +143,7 @@ public class Main {
                             .setHost("api.telegram.org/")
                             .setPath("bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/sendMessage")
                             .setParameter("chat_id", String.valueOf(from))
-                            .setParameter("text", "reply: " + newText);
+                            .setParameter("text", newText);
 
                     URI uri;
                     try {
