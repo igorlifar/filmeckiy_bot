@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,6 +62,23 @@ public class Main {
             }
         }
         return m[a.length()][b.length()];
+    }
+
+    public static class Tuple<T1, T2> {
+        private final T1 _1;
+        private final T2 _2;
+
+        public Tuple(T1 _1, T2 _2) {
+            this._1 = _1;
+            this._2 = _2;
+        }
+
+        public static class Cmp<T1 extends Comparable<T1>, T2> implements Comparator<Tuple<T1, T2>> {
+            @Override
+            public int compare(Tuple<T1, T2> o1, Tuple<T1, T2> o2) {
+                return o1._1.compareTo(o2._1);
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -122,16 +140,22 @@ public class Main {
                     long from = update.path("message").path("from").path("id").longValue();
                     String text = update.path("message").path("text").textValue();
 
+                    ArrayList<Tuple<Integer, Film>> tupleList = new ArrayList<>();
+
                     int minDist = 1000;
                     Film res = null;
                     for (Film film : movies) {
                         int dist = levenshtein(text, film.title);
+
+                        tupleList.add(new Tuple<>(dist, film));
 
                         if (dist < minDist) {
                             minDist = dist;
                             res = film;
                         }
                     }
+
+                    tupleList.sort(new Tuple.Cmp<>());
 
                     logger.info("Query: {}, Title: {}, Dist: {}", text, res, minDist);
                     String newText = Film.getText(res);
@@ -142,11 +166,12 @@ public class Main {
 
                     ObjectNode objectNode = om.createObjectNode();
                     ArrayNode arrayNode = om.createArrayNode();
-                    ArrayNode arrayNode2 = om.createArrayNode();
-                    arrayNode2.add("movie1");
-                    arrayNode2.add("movie2");
 
-                    arrayNode.add(arrayNode2);
+                    arrayNode.add(om.createArrayNode().add("/cancel"));
+                    for (int j = 0; j < 5; j++) {
+                        arrayNode.add(om.createArrayNode().add(tupleList.get(j)._2.title));
+                    }
+
                     objectNode.set("keyboard", arrayNode);
                     objectNode.put("one_time_keyboard", true);
 
