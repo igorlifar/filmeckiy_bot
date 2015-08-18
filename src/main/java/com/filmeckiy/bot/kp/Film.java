@@ -1,18 +1,17 @@
 package com.filmeckiy.bot.kp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.filmeckiy.bot.utils.Option;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.BsonArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author egor
@@ -71,8 +70,8 @@ public class Film {
         Option<String> director = Option.none();
         String genres1 = "";
         for (Element e : parsed.select("#infoTable tr")) {
-            if (e.select("td").first().text().equals("год")) {
-                year = Option.some(e.select("td").get(1).text());
+            if (e.select("td").first().text().equals("год") && e.select("td").get(1).select("a").size() != 0) {
+                year = Option.some(e.select("td").get(1).select("a").get(0).text());
             }
             if (e.select("td").first().text().equals("слоган")) {
                 slogan =  Option.some(e.select("td").get(1).text());
