@@ -145,7 +145,7 @@ public class Main {
                     int minDist = 1000;
                     Film res = null;
                     for (Film film : movies) {
-                        int dist = levenshtein(text, film.title);
+                        int dist = levenshtein(text, film.title + " " + film.year.getOrElse(""));
 
                         tupleList.add(new Tuple<>(dist, film));
 
@@ -168,7 +168,7 @@ public class Main {
                     ArrayNode arrayNode = om.createArrayNode();
 
                     for (int j = 0; j < 3; j++) {
-                        arrayNode.add(om.createArrayNode().add(tupleList.get(j)._2.title));
+                        arrayNode.add(om.createArrayNode().add(tupleList.get(j)._2.title + " " + tupleList.get(j)._2.year.getOrElse("")));
                     }
                     arrayNode.add(om.createArrayNode().add("/cancel"));
 
