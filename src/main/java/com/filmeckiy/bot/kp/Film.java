@@ -135,6 +135,8 @@ public class Film {
 
         String result = "";
 
+        rating *= 2;
+
         int times = -1;
         while (true) {
             times += 1;
@@ -166,7 +168,7 @@ public class Film {
             break;
         }
 
-        while (times < 5) {
+        while (times < 10) {
             result += x5;
             times += 1;
         }
