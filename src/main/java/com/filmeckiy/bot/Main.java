@@ -140,7 +140,7 @@ public class Main {
                     long from = update.path("message").path("from").path("id").longValue();
                     String text = update.path("message").path("text").textValue();
 
-                    if (text.equals("\\cancel")) {
+                    if (text.equals("/cancel")) {
                         continue;
                     }
 
