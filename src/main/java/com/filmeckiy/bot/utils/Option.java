@@ -13,6 +13,9 @@ public abstract class Option<T> {
     public boolean isEmpty() {
         return !isDefined();
     }
+    public T getOrElse(T elseResult) {
+        return isDefined() ? get(): elseResult;
+    }
 
     public static <T> Option<T> some(T value) {
         return new NotEmptyOption<>(value);

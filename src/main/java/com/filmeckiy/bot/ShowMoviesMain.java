@@ -8,8 +8,12 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import sun.security.x509.AttributeNameEnumeration;
 
 import javax.print.Doc;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author egor
@@ -40,6 +44,7 @@ public class ShowMoviesMain {
             String description = "";
             String country = "";
             String director = "";
+            String genres1 = "";
             for (Element e : parsed.select("#infoTable tr")) {
                 if (e.select("td").first().text().equals("год")) {
                     year = e.select("td").get(1).text();
@@ -53,17 +58,43 @@ public class ShowMoviesMain {
                 if (e.select("td").first().text().equals("режиссер")) {
                     director = e.select("td").get(1).text();
                 }
+                if (e.select("td").first().text().equals("жанр")) {
+                    genres1 = e.select("td").get(1).text();
+                }
             }
-
-            description = parsed.select("div.block_left_padtop div.brand_words").text();
+            String[] split = genres1.split(",");
+            List<String> genres = new ArrayList<>();
+            for (String genre : split) {
+                if (!genre.trim().equals("... слова")) {
+                    genres.add(genre.trim());
+                }
+            }
+            String[] split1 = country.split(",");
+            List<String> countries = new ArrayList<>();
+            for (String country1 : split1) {
+                countries.add(country1.trim());
+            }
+            description = parsed.select("div.block_left_padtop div.brand_words[itemprop=\"description\"]").text();
+            List<String> actors = new ArrayList<>();
+            Elements uls = parsed.select("#actorList ul");
+            if (uls.size() != 0) {
+                for (Element a : uls.get(0).select("li")) {
+                    if (!a.text().equals("...")) {
+                        actors.add(a.text());
+                    }
+                }
+            }
+            double kpRating = Double.parseDouble(rating);
 
             logger.info("{}:", url);
             logger.info("{}", title);
             logger.info("{}", slogan);
             logger.info("{}", year);
-            logger.info("{}", country);
+            logger.info(countries);
             logger.info("{}", director);
-            logger.info("Kinopoisk rating: {}", rating);
+            logger.info("{}", actors);
+            logger.info(genres);
+            logger.info("Kinopoisk rating: {}", kpRating);
             logger.info("Description:");
             logger.info("{}", description);
         }
