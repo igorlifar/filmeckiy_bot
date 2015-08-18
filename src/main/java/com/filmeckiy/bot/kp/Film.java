@@ -181,37 +181,37 @@ public class Film {
             return "NULL";
         }
         String ans = "";
-        ans += film.title;
-        ans += "\n";
-
-        ans += film.kpRating.getOrElse(0.).toString();
-        if (film.kpRating.isDefined()) {
-            ans += drawRating(film.kpRating.get());
+        String countriesLine = film.countries.isEmpty() ? "" : ", " + formatStringList(film.countries);
+        ans += String.format("%s (%s%s)\n", film.title, film.year.getOrElse("?"), countriesLine);
+        if (!film.genres.isEmpty()) {
+            ans += String.format("%s\n", formatStringList(film.actors));
         }
-        ans += "\n";
 
-        ans += film.director.getOrElse("");
-        ans += "\n";
-        ans += film.year.getOrElse("");
-        ans += "\n";
+        if (film.kpRating.isDefined()) {
+            ans += String.format("%.1f %s\n\n", film.kpRating.get(), drawRating(film.kpRating.get()));
+        }
+
+        if (film.director.isDefined()) {
+            ans += String.format("Режиссер: %s\n", film.director.get());
+        }
+
+        if (!film.actors.isEmpty()) {
+            ans += String.format("В ролях: %s\n\n", formatStringList(film.actors));
+        }
+
         ans += film.description.getOrElse("");
         ans += "\n";
         ans += film.slogan.getOrElse("");
         ans += "\n";
-
-        for (String s : film.actors) {
-            ans += s + ' ';
-        }
-        ans += "\n";
-        for (String s : film.genres) {
-            ans += s + ' ';
-        }
-        ans += "\n";
-        for (String s : film.countries) {
-            ans += s + ' ';
-        }
-        ans += "\n";
         return ans;
+    }
+
+    private static String formatStringList(List<String> list) {
+        String actorsLine = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            actorsLine += String.format("%s, ", list.get(i));
+        }
+        return actorsLine;
     }
 
     public static void addFilmToMongo(Film film, MongoCollection<org.bson.Document> collection) {
