@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.*;
 import com.filmeckiy.bot.kp.Film;
 import com.filmeckiy.bot.kp.MongoUtils;
 import com.mongodb.client.FindIterable;
@@ -51,7 +52,7 @@ public class Main {
                     m[i + 1][j] = Math.min(m[i + 1][j], m[i][j] + 1);
                     continue;
                 }
-                m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j] + 2);
+                m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j] + 1);
                 if (a.charAt(i) == b.charAt(j)) {
                     m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j]);
                 }
@@ -132,10 +133,22 @@ public class Main {
                         }
                     }
 
+                    logger.info("Query: {}, Title: {}, Dist: {}", text, res, minDist);
                     String newText = Film.getText(res);
 
 
                     logger.info("Update id: {}, from: {}, text: {}", updateId, from, text);
+
+
+                    ObjectNode objectNode = om.createObjectNode();
+                    ArrayNode arrayNode = om.createArrayNode();
+                    ArrayNode arrayNode2 = om.createArrayNode();
+                    arrayNode2.add("movie1");
+                    arrayNode2.add("movie2");
+
+                    arrayNode.add(arrayNode2);
+                    objectNode.set("keyboard", arrayNode);
+                    objectNode.put("one_time_keyboard", true);
 
                     URIBuilder uriBuilder = new URIBuilder();
                     uriBuilder
@@ -143,7 +156,8 @@ public class Main {
                             .setHost("api.telegram.org/")
                             .setPath("bot98005573:AAG-tn1xzJQkt3h1adyM3mAzAL9loIY2ruk/sendMessage")
                             .setParameter("chat_id", String.valueOf(from))
-                            .setParameter("text", newText);
+                            .setParameter("text", newText)
+                            .setParameter("reply_markup", objectNode.toString());
 
                     URI uri;
                     try {
