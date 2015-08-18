@@ -142,7 +142,13 @@ public class Film {
         ans += "\n";
         ans += film.slogan.getOrElse("");
         ans += "\n";
-        ans += film.kpRating.getOrElse(-1.0).toString();
+        ans += film.kpRating.getOrElse(0.).toString();
+        if (film.kpRating.isDefined()) {
+            ans += " ";
+            for (int i = 0; i < film.kpRating.get(); i++) {
+                ans += "\u2B50️";
+            }
+        }
         ans += "\n";
         for (String s : film.actors) {
             ans += s + ' ';
