@@ -95,7 +95,7 @@ public class Main {
 
         for (org.bson.Document doc : documents) {
             Film filmec = Film.getMoviefromDocument(doc);
-            if (filmec.year.isDefined() && Long.parseLong(filmec.year.get()) >= 1975) {
+            if (filmec.year.isDefined() && !filmec.year.get().equals("-") && Long.parseLong(filmec.year.get()) >= 1975) {
                 movies.add(filmec);
             }
         }
