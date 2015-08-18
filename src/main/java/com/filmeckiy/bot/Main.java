@@ -172,8 +172,11 @@ public class Main {
                     ObjectNode objectNode = om.createObjectNode();
                     ArrayNode arrayNode = om.createArrayNode();
 
-                    for (int j = 0; j < 3; j++) {
-                        arrayNode.add(om.createArrayNode().add(tupleList.get(j)._2.title + " " + tupleList.get(j)._2.year.getOrElse("")));
+                    for (int j = 0; j < 2; j++) {
+                        arrayNode.add(om
+                                .createArrayNode()
+                                .add(getSuggestText(tupleList.get(j * 2)))
+                                .add(getSuggestText(tupleList.get(j * 2 + 1))));
                     }
                     arrayNode.add(om.createArrayNode().add("/cancel"));
 
@@ -219,5 +222,9 @@ public class Main {
             }
         }
 
+    }
+
+    private static String getSuggestText(Tuple<Integer, Film> film1) {
+        return film1._2.title + " " + film1._2.year.getOrElse("");
     }
 }
