@@ -34,5 +34,7 @@ public class StringUtilsTest {
         System.out.println("equals 2: " + Main.equals(
                 tokens1,
                 tokens2));
+
+        System.out.println("123  123 12 344".replaceAll(" ", ""));
     }
 }
