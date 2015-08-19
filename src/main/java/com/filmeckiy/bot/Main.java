@@ -170,8 +170,8 @@ public class Main {
                     for (int j = 0; j < 2; j++) {
                         arrayNode.add(om
                                 .createArrayNode()
-                                .add(getSuggestText(tupleList.get(tupleList.size() - j * 2)))
-                                .add(getSuggestText(tupleList.get(tupleList.size() - (j * 2 + 1)))));
+                                .add(getSuggestText(tupleList.get(tupleList.size() - 1 - j * 2)))
+                                .add(getSuggestText(tupleList.get(tupleList.size() - 1 - (j * 2 + 1)))));
                     }
                     arrayNode.add(om.createArrayNode().add("/cancel"));
 
