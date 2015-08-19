@@ -89,12 +89,17 @@ public class Main {
         for (org.bson.Document doc : documents) {
             try {
                 Film filmec = Film.getMoviefromDocument(doc);
-                if (filmec.year.isDefined() && !filmec.year.get().equals("-") && Long.parseLong(filmec.year.get()) >= 1975) {
-                    movies.add(filmec);
+                if (!(filmec.year.isDefined() && !filmec.year.get().equals("-") && Long.parseLong(filmec.year.get()) >= 1975)) {
+                    continue;
                 }
+
+                if (filmec.year.isDefined() && Integer.parseInt(filmec.year.get()) < 2015 && filmec.ratingCount.getOrElse(0) < 500) {
+                    continue;
+                }
+
+                movies.add(filmec);
             } catch (Exception e) {
                 logger.error("Failed on film: {} {}", doc.toJson());
-                continue;
             }
         }
         logger.info("Read {} movies", movies.size());
