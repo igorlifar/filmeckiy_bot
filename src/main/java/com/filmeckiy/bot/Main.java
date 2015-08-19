@@ -109,7 +109,7 @@ public class Main {
                 k += 0.1;
             }
         }
-        return Math.pow(k, 1.3);
+        return Math.pow(k, 2);
     }
 
 
@@ -300,7 +300,7 @@ public class Main {
 
         for (String actor : film.actors) {
            /*  ans += 30 * equals(queryTokens, StringUtils.main(actor));*/
-            ans += 30 * equals1(queryTokens, StringUtils.main(actor));
+            ans += 75 * equals1(queryTokens, StringUtils.main(actor));
         }
 
         for (String genre : film.genres) {
