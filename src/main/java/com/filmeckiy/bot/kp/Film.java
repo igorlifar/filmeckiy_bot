@@ -27,6 +27,7 @@ public class Film {
     public final Option<String> description;
     public final Option<String> slogan;
     public final Option<Double> kpRating;
+    public final Option<Integer> ratingCount;
 
     public final List<String> actors;
     public final List<String> genres;
@@ -40,6 +41,7 @@ public class Film {
             Option<String> description,
             Option<String> slogan,
             Option<Double> kpRating,
+            Option<Integer> ratingCountInt,
             List<String> actors,
             List<String> genres,
             List<String> countries)
@@ -51,6 +53,7 @@ public class Film {
         this.description = description;
         this.slogan = slogan;
         this.kpRating = kpRating;
+        this.ratingCount = ratingCountInt;
         this.actors = actors;
         this.genres = genres;
         this.countries = countries;
@@ -65,6 +68,7 @@ public class Film {
         title = title.substring(0, title.length() - titleMusor.length()).trim();
 
         String rating = parsed.select("#block_rating span.rating_ball").text();
+        String ratingCount = parsed.select("#block_rating span.ratingCount").text();
 
         Option<String> year = Option.none();
         Option<String> slogan = Option.none();
@@ -117,7 +121,12 @@ public class Film {
                 ? Option.none()
                 : Option.some(Double.parseDouble(rating));
 
-        return new Film(id, title, year, director, description, slogan, kpRating, actors, genres, countries);
+        Option<Integer> ratingCountInt = ratingCount.equals("")
+                ? Option.none()
+                : Option.some(Integer.parseInt(ratingCount));
+
+        return new Film(
+                id, title, year, director, description, slogan, kpRating, ratingCountInt, actors, genres, countries);
     }
 
     public static void addFilmtoMongo(Film film) {
@@ -251,6 +260,9 @@ public class Film {
         if (film.kpRating.isDefined()) {
             document = document.append("kpRating", film.kpRating.get());
         }
+        if (film.ratingCount.isDefined()) {
+            document = document.append("ratingCount", film.ratingCount.get());
+        }
         document = document.append("actors", film.actors);
         document = document.append("genres", film.genres);
         document = document.append("countries", film.countries);
@@ -277,6 +289,8 @@ public class Film {
         Option<String> descriptionO = description == null ? Option.none() : Option.some(description);
         Double kpRating = doc.getDouble("kpRating");
         Option<Double> kpRatingO = kpRating == null ? Option.none() : Option.some(kpRating);
+        Integer ratingCount = doc.getInteger("ratingCount");
+        Option<Integer> ratingCountO = ratingCount == null ? Option.none() : Option.some(ratingCount);
         List<String> actors = new ArrayList<>();
         for (int i = 0; i < doc.get("actors", List.class).size(); i++) {
             actors.add(doc.get("actors", List.class).get(i).toString());
@@ -289,7 +303,8 @@ public class Film {
         for (int i = 0; i < doc.get("countries", List.class).size(); i++) {
             countries.add(doc.get("countries", List.class).get(i).toString());
         }
-        return new Film(id, title, yearO, directorO, descriptionO, sloganO, kpRatingO, actors, genres, countries);
+        return new Film(id, title, yearO,
+                directorO, descriptionO, sloganO, kpRatingO, ratingCountO, actors, genres, countries);
     }
 
     public static Option<Film> getMoviefromMongo(long id) {

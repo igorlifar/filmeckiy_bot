@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
-
 /**
  * @author egor
  */
@@ -17,7 +15,7 @@ public class FilmTest {
                 12134, "korolo levtrhones", Option.some("2015"),
                 Option.some("Abrams"), Option.some("Filmec klevii"),
                 Option.some("winter is coming"), Option.some(10.0),
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                ratingCountInt, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         Film.addFilmtoMongo(film);
         Film.getMoviefromMongo(12134);
     }
