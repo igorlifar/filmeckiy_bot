@@ -61,6 +61,9 @@ public class Film {
 
         long id = Long.parseLong(url.split("/")[4]);
         String title = parsed.select("#headerFilm h1.moviename-big").text();
+        String titleMusor = parsed.select("#headerFilm h1.moviename-big span").text();
+        title = title.substring(0, title.length() - titleMusor.length()).trim();
+
         String rating = parsed.select("#block_rating span.rating_ball").text();
 
         Option<String> year = Option.none();
@@ -127,7 +130,7 @@ public class Film {
     }
 
     private static String drawRating(double rating) {
-        String x1 = "\uD83C\uDF15";
+       String x1 = "\uD83C\uDF15";
         String x2 = "\uD83C\uDF16";
         String x3 = "\uD83C\uDF17";
         String x4 = "\uD83C\uDF18";
