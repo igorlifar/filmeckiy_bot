@@ -56,7 +56,7 @@ public class Main {
         int k = 0;
         for (int i = 0; i < n; i++) {
             while (l < m) {
-                int maxk = (Math.min(a.get(i).length(), b.get(l).length()) + 2) / 4;
+                int maxk = (Math.min(a.get(i).length(), b.get(l).length()) + 2) / 5;
                 int nop = StringUtils.nop(a.get(i), b.get(l), maxk);
 
                 assert nop <= a.get(i).length();
