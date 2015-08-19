@@ -93,7 +93,7 @@ public class Main {
                     continue;
                 }
 
-                if (filmec.year.isDefined() && Integer.parseInt(filmec.year.get()) < 2015 && filmec.ratingCount.getOrElse(0) < 500) {
+                if (filmec.year.isDefined() && Integer.parseInt(filmec.year.get()) < 2015 && filmec.ratingCount.getOrElse(0) < 1000) {
                     continue;
                 }
 
