@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * @author egor
  */
@@ -14,8 +12,8 @@ public class MainTest {
 
     @Test
     public void test() {
-        System.out.println(Main.levenshtein("гарри поттер и дары смерти", "Карта смерти"));
-        System.out.println(Main.levenshtein("гарри поттер и дары смерти", "Гарри Поттер и Дары Смерти: Часть I"));
+        System.out.println(StringUtils.levenshtein("гарри поттер и дары смерти", "Карта смерти"));
+        System.out.println(StringUtils.levenshtein("гарри поттер и дары смерти", "Гарри Поттер и Дары Смерти: Часть I"));
 
         ObjectMapper om = new ObjectMapper();
 

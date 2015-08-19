@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,38 +31,6 @@ import org.bson.Document;
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
-    public static int levenshtein(String a, String b) {
-        int[][] m = new int[a.length() + 1][b.length() + 1];
-        for (int i = 0; i <= a.length(); i++) {
-            for (int j = 0; j <= b.length(); j++) {
-                m[i][j] = 1000000;
-            }
-        }
-        m[0][0] = 0;
-        for (int i = 0; i <= a.length(); i++) {
-            for (int j = 0; j <= b.length(); j++) {
-                if (a.length() == i && b.length() == j) {
-                    continue;
-                }
-                if (a.length() == i) {
-                    m[i][j + 1] = Math.min(m[i][j + 1], m[i][j] + 1);
-                    continue;
-                }
-                if (b.length() == j) {
-                    m[i + 1][j] = Math.min(m[i + 1][j], m[i][j] + 1);
-                    continue;
-                }
-                m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j] + 1);
-                if (a.charAt(i) == b.charAt(j)) {
-                    m[i + 1][j + 1] = Math.min(m[i + 1][j + 1], m[i][j]);
-                }
-                m[i + 1][j] = Math.min(m[i + 1][j], m[i][j] + 1);
-                m[i][j + 1] = Math.min(m[i][j + 1], m[i][j] + 1);
-            }
-        }
-        return m[a.length()][b.length()];
-    }
-
     public static class Tuple<T1, T2> {
         private final T1 _1;
         private final T2 _2;
@@ -81,10 +48,31 @@ public class Main {
         }
     }
 
+
+    public static int equals(List<String> a, List<String> b) {
+        int n = a.size();
+        int m = b.size();
+        int l = 0;
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            while (l < m) {
+                int maxk = (Math.min(a.get(i).length(), b.get(i).length()) + 2) / 4;
+                if (StringUtils.nop(a.get(i), b.get(l), maxk) >= Math.min(a.get(i).length(), b.get(i).length()))  {
+                    break;
+                }
+                l++;
+            }
+            if (l != m) {
+                k++;
+            }
+            l++;
+        }
+        return k;
+    }
+
+
     public static void main(String[] args) {
         logger.info("Lol, privetik");
-
-        HashMap<String, Film> titleToFilm = new HashMap<>();
 
         FindIterable<Document> documents = MongoUtils.getClient()
                 .getDatabase(MongoUtils.DB_NAME)
@@ -104,7 +92,7 @@ public class Main {
                 continue;
             }
         }
-        logger.info("Read {} movies", titleToFilm.size());
+        logger.info("Read {} movies", movies.size());
 
         long previousMaxUpdateId = 0;
 
@@ -155,7 +143,9 @@ public class Main {
                     int minDist = 1000;
                     Film res = null;
                     for (Film film : movies) {
-                        int dist = levenshtein(text, film.title + " " + film.year.getOrElse(""));
+                        int dist = equals(
+                                StringUtils.main(text),
+                                StringUtils.main(film.title + " " + film.year.getOrElse("")));
 
                         tupleList.add(new Tuple<>(dist, film));
 
