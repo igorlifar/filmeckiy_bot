@@ -109,7 +109,7 @@ public class Main {
                 k += 0.1;
             }
         }
-        return k;
+        return Math.pow(k, 1.3);
     }
 
 
