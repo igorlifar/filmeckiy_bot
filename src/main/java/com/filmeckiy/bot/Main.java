@@ -157,7 +157,7 @@ public class Main {
 
                     tupleList.sort(new Tuple.Cmp<>());
 
-                    logger.info("Query: {}, Title: {}, Dist: {}", text, res, maxScore);
+                    logger.info("Query: {}, Title: {}, Dist: {}", text, res.title, maxScore);
                     String newText = Film.getText(res);
 
 
