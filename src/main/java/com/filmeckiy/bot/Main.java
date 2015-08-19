@@ -249,7 +249,7 @@ public class Main {
         double ans = film.kpRating.getOrElse(0.);
 
         ans += 100 * equals(queryTokens, StringUtils.main(film.title));
-        ans += 150 * equals(queryTokens, StringUtils.main(film.year.getOrElse("")));
+        ans += 250 * equals(queryTokens, StringUtils.main(film.year.getOrElse("")));
         ans += 50 * equals(queryTokens, StringUtils.main(film.director.getOrElse("")));
         ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
 
