@@ -26,5 +26,13 @@ public class StringUtilsTest {
         System.out.println("equals: " + Main.equals(
                 StringUtils.main("гарри поттер дары часть 2"),
                 StringUtils.main("Гарри поттер и дары смерти: часть II")));
+
+        List<String> tokens1 = StringUtils.main("гарри поттер орден");
+        List<String> tokens2 = StringUtils.main("Гарри Поттер и Дары Смерти: Часть II 2011");
+        System.out.println(tokens1);
+        System.out.println(tokens2);
+        System.out.println("equals 2: " + Main.equals(
+                tokens1,
+                tokens2));
     }
 }

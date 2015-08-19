@@ -56,8 +56,8 @@ public class Main {
         int k = 0;
         for (int i = 0; i < n; i++) {
             while (l < m) {
-                int maxk = (Math.min(a.get(i).length(), b.get(i).length()) + 2) / 4;
-                if (StringUtils.nop(a.get(i), b.get(l), maxk) >= Math.min(a.get(i).length(), b.get(i).length()))  {
+                int maxk = (Math.min(a.get(i).length(), b.get(l).length()) + 2) / 4;
+                if (StringUtils.nop(a.get(i), b.get(l), maxk) >= Math.min(a.get(i).length(), b.get(l).length()))  {
                     break;
                 }
                 l++;
