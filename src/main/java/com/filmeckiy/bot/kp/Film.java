@@ -123,7 +123,7 @@ public class Film {
 
         Option<Integer> ratingCountInt = ratingCount.equals("")
                 ? Option.none()
-                : Option.some(Integer.parseInt(ratingCount.replaceAll(" ", "")));
+                : Option.some(Integer.parseInt(ratingCount.replaceAll(" ", "")));
 
         return new Film(
                 id, title, year, director, description, slogan, kpRating, ratingCountInt, actors, genres, countries);

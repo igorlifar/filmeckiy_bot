@@ -35,6 +35,6 @@ public class StringUtilsTest {
                 tokens1,
                 tokens2));
 
-        System.out.println("123  123 12 344".replaceAll(" ", ""));
+        System.out.println("177 474".replaceAll(" ", ""));
     }
 }
