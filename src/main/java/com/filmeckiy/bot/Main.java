@@ -62,7 +62,11 @@ public class Main {
                 assert nop <= a.get(i).length();
                 assert nop <= b.get(l).length();
 
-                if (nop >= Math.max(a.get(i).length(), b.get(l).length()) * 0.9)  {
+                double max = Math.max(
+                        Math.min(a.get(i).length(), b.get(i).length()),
+                        Math.max(a.get(i).length(), b.get(i).length()) * 0.8);
+
+                if (nop >= max)  {
                     logger.info("found: {} {} {}", nop, a.get(i), b.get(l));
                     break;
                 }
