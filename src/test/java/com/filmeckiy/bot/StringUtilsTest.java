@@ -28,7 +28,7 @@ public class StringUtilsTest {
                 StringUtils.main("Гарри поттер и дары смерти: часть II")));
 
         List<String> tokens1 = StringUtils.main("гарри поттер орден");
-        List<String> tokens2 = StringUtils.main("Гарри Поттер и Дары Смерти: Часть II 2011");
+        List<String> tokens2 = StringUtils.main("Сила любви: Куинси Джонс и сэр Майкл Кейн празднование 80-го дня рождения (ТВ)");
         System.out.println(tokens1);
         System.out.println(tokens2);
         System.out.println("equals 2: " + Main.equals(

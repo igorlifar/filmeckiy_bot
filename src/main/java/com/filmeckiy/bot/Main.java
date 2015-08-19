@@ -57,15 +57,21 @@ public class Main {
         for (int i = 0; i < n; i++) {
             while (l < m) {
                 int maxk = (Math.min(a.get(i).length(), b.get(l).length()) + 2) / 4;
-                if (StringUtils.nop(a.get(i), b.get(l), maxk) >= Math.min(a.get(i).length(), b.get(l).length()))  {
+                int nop = StringUtils.nop(a.get(i), b.get(l), maxk);
+
+                assert nop <= a.get(i).length();
+                assert nop <= b.get(l).length();
+
+                if (nop >= Math.max(a.get(i).length(), b.get(l).length()) * 0.9)  {
+                    logger.info("found: {} {} {}", nop, a.get(i), b.get(l));
                     break;
                 }
                 l++;
             }
             if (l != m) {
                 k++;
+                l++;
             }
-            l++;
         }
         return k;
     }
