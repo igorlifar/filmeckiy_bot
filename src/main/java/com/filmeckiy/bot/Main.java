@@ -49,25 +49,21 @@ public class Main {
     }
 
 
-    public static int equals(List<String> a, List<String> b) {
+    public static double equals(List<String> a, List<String> b) {
         int n = a.size();
         int m = b.size();
         int k = 0;
         for (int i = 0; i < n; i++) {
             int l = 0;
             while (l < m) {
-                int maxk = Math.min(a.get(i).length(), b.get(l).length()) / 5;
+                int maxk = Math.min(a.get(i).length(), b.get(l).length()) / 6;
                 int nop = StringUtils.nop(a.get(i), b.get(l), maxk);
-
-                assert nop <= a.get(i).length();
-                assert nop <= b.get(l).length();
 
                 double max = Math.max(
                         Math.min(a.get(i).length(), b.get(l).length()),
                         Math.max(a.get(i).length(), b.get(l).length()) * 0.8);
 
                 if (nop >= max)  {
-                    logger.info("found: {} {} {}", nop, a.get(i), b.get(l));
                     break;
                 }
                 l++;
@@ -76,7 +72,7 @@ public class Main {
                 k++;
             }
         }
-        return k;
+        return k / Math.sqrt(b.size());
     }
 
 
@@ -247,7 +243,7 @@ public class Main {
 
         double ans = film.kpRating.getOrElse(0.);
 
-        ans += 100 * equals(queryTokens, StringUtils.main(film.title));
+        ans += 150 * equals(queryTokens, StringUtils.main(film.title));
         ans += 50 * equals(queryTokens, StringUtils.main(film.year.getOrElse("")));
         ans += 50 * equals(queryTokens, StringUtils.main(film.director.getOrElse("")));
         ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
