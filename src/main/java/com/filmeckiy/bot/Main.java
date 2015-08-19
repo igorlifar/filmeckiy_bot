@@ -148,12 +148,12 @@ public class Main {
                         continue;
                     }
 
-                    ArrayList<Tuple<Integer, Film>> tupleList = new ArrayList<>();
+                    ArrayList<Tuple<Double, Film>> tupleList = new ArrayList<>();
 
-                    int maxScore = 0;
+                    double maxScore = 0;
                     Film res = null;
                     for (Film film : movies) {
-                        int score = getScore(text, film);
+                        double score = getScore(text, film);
 
                         tupleList.add(new Tuple<>(score, film));
 
