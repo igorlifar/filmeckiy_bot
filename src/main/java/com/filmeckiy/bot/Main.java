@@ -52,9 +52,9 @@ public class Main {
     public static int equals(List<String> a, List<String> b) {
         int n = a.size();
         int m = b.size();
-        int l = 0;
         int k = 0;
         for (int i = 0; i < n; i++) {
+            int l = 0;
             while (l < m) {
                 int maxk = Math.min(a.get(i).length(), b.get(l).length()) / 5;
                 int nop = StringUtils.nop(a.get(i), b.get(l), maxk);
@@ -63,8 +63,8 @@ public class Main {
                 assert nop <= b.get(l).length();
 
                 double max = Math.max(
-                        Math.min(a.get(i).length(), b.get(i).length()),
-                        Math.max(a.get(i).length(), b.get(i).length()) * 0.8);
+                        Math.min(a.get(i).length(), b.get(l).length()),
+                        Math.max(a.get(i).length(), b.get(l).length()) * 0.8);
 
                 if (nop >= max)  {
                     logger.info("found: {} {} {}", nop, a.get(i), b.get(l));
@@ -74,7 +74,6 @@ public class Main {
             }
             if (l != m) {
                 k++;
-                l++;
             }
         }
         return k;
