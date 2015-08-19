@@ -98,12 +98,12 @@ public class Main {
                 }
                 int nop = StringUtils.nop(a.get(i), b.get(j), 1);
                 if (nop >= max) {
-                    k += 0.9;
+                    k += 0.5;
                     continue;
                 }
                 nop = StringUtils.nop(a.get(i), b.get(j), 2);
                 if (nop >= max) {
-                    k += 0.4;
+                    k += 0.25;
                     continue;
                 }
                 k += 0.1;
