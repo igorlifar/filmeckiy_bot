@@ -140,24 +140,24 @@ public class Main {
 
                     ArrayList<Tuple<Integer, Film>> tupleList = new ArrayList<>();
 
-                    int minDist = 1000;
+                    int maxScore = 0;
                     Film res = null;
                     for (Film film : movies) {
-                        int dist = equals(
+                        int score = equals(
                                 StringUtils.main(text),
                                 StringUtils.main(film.title + " " + film.year.getOrElse("")));
 
-                        tupleList.add(new Tuple<>(dist, film));
+                        tupleList.add(new Tuple<>(score, film));
 
-                        if (dist < minDist) {
-                            minDist = dist;
+                        if (score > maxScore) {
+                            maxScore = score;
                             res = film;
                         }
                     }
 
                     tupleList.sort(new Tuple.Cmp<>());
 
-                    logger.info("Query: {}, Title: {}, Dist: {}", text, res, minDist);
+                    logger.info("Query: {}, Title: {}, Dist: {}", text, res, maxScore);
                     String newText = Film.getText(res);
 
 
@@ -170,8 +170,8 @@ public class Main {
                     for (int j = 0; j < 2; j++) {
                         arrayNode.add(om
                                 .createArrayNode()
-                                .add(getSuggestText(tupleList.get(j * 2)))
-                                .add(getSuggestText(tupleList.get(j * 2 + 1))));
+                                .add(getSuggestText(tupleList.get(tupleList.size() - j * 2)))
+                                .add(getSuggestText(tupleList.get(tupleList.size() - (j * 2 + 1)))));
                     }
                     arrayNode.add(om.createArrayNode().add("/cancel"));
 
