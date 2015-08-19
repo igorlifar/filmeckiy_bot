@@ -72,7 +72,7 @@ public class Main {
                 k++;
             }
         }
-        return k / Math.sqrt(b.size());
+        return k / Math.sqrt(1 + b.size());
     }
 
 
