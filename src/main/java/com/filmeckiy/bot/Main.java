@@ -56,7 +56,7 @@ public class Main {
         int k = 0;
         for (int i = 0; i < n; i++) {
             while (l < m) {
-                int maxk = (Math.min(a.get(i).length(), b.get(l).length()) + 2) / 5;
+                int maxk = Math.min(a.get(i).length(), b.get(l).length()) / 5;
                 int nop = StringUtils.nop(a.get(i), b.get(l), maxk);
 
                 assert nop <= a.get(i).length();
@@ -243,10 +243,29 @@ public class Main {
 
     }
 
-    private static int getScore(String text, Film film) {
-        return equals(
-                StringUtils.main(text),
-                StringUtils.main(film.title + " " + film.year.getOrElse("")));
+    private static double getScore(String text, Film film) {
+        List<String> queryTokens = StringUtils.main(text);
+
+        double ans = film.kpRating.getOrElse(0.);
+
+        ans += 100 * equals(queryTokens, StringUtils.main(film.title));
+        ans += 150 * equals(queryTokens, StringUtils.main(film.year.getOrElse("")));
+        ans += 50 * equals(queryTokens, StringUtils.main(film.director.getOrElse("")));
+        ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
+
+        for (String country : film.countries) {
+            ans += 10 * equals(queryTokens, StringUtils.main(country));
+        }
+
+        for (String actor : film.actors) {
+            ans += 30 * equals(queryTokens, StringUtils.main(actor));
+        }
+
+        for (String genre : film.genres) {
+            ans += 15 * equals(queryTokens, StringUtils.main(genre));
+        }
+
+        return ans;
     }
 
     private static String getSuggestText(Film film) {
