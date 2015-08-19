@@ -143,9 +143,7 @@ public class Main {
                     int maxScore = 0;
                     Film res = null;
                     for (Film film : movies) {
-                        int score = equals(
-                                StringUtils.main(text),
-                                StringUtils.main(film.title + " " + film.year.getOrElse("")));
+                        int score = getScore(text, film);
 
                         tupleList.add(new Tuple<>(score, film));
 
@@ -167,11 +165,27 @@ public class Main {
                     ObjectNode objectNode = om.createObjectNode();
                     ArrayNode arrayNode = om.createArrayNode();
 
+                    List<Film> suggest = new ArrayList<>();
+                    int z = tupleList.size();
+                    while (suggest.size() < 4) {
+                        z--;
+
+                        if (tupleList.get(z)._2.id == res.id) {
+                            continue;
+                        }
+
+                        suggest.add(tupleList.get(z)._2);
+                    }
+
+                    for (Film f : suggest) {
+                        logger.info("Film: {}, score: {}", f.title, getScore(text, f));
+                    }
+
                     for (int j = 0; j < 2; j++) {
                         arrayNode.add(om
                                 .createArrayNode()
-                                .add(getSuggestText(tupleList.get(tupleList.size() - 1 - j * 2)))
-                                .add(getSuggestText(tupleList.get(tupleList.size() - 1 - (j * 2 + 1)))));
+                                .add(getSuggestText(suggest.get(j * 2)))
+                                .add(getSuggestText(suggest.get(j * 2 + 1))));
                     }
                     arrayNode.add(om.createArrayNode().add("/cancel"));
 
@@ -219,7 +233,13 @@ public class Main {
 
     }
 
-    private static String getSuggestText(Tuple<Integer, Film> film1) {
-        return film1._2.title + " " + film1._2.year.getOrElse("");
+    private static int getScore(String text, Film film) {
+        return equals(
+                StringUtils.main(text),
+                StringUtils.main(film.title + " " + film.year.getOrElse("")));
+    }
+
+    private static String getSuggestText(Film film) {
+        return film.title + " " + film.year.getOrElse("");
     }
 }
