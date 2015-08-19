@@ -49,6 +49,7 @@ public class Main {
     }
 
 
+    /*
     public static double equals(List<String> a, List<String> b) {
         int n = a.size();
         int m = b.size();
@@ -73,6 +74,42 @@ public class Main {
             }
         }
         return k / Math.sqrt(1 + b.size());
+    }*/
+
+
+
+    public static double equals1(List<String> a, List<String> b) {
+        int n = a.size();
+        int m = b.size();
+        double k = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int f = Math.min(a.get(i).length(), b.get(j).length());
+                double max = Math.max(
+                        Math.min(a.get(i).length(), b.get(j).length()),
+                        Math.max(a.get(i).length(), b.get(j).length()) * 0.8);
+                if (a.get(i).equals(b.get(i))) {
+                    k += 2.0;
+                    continue;
+                }
+                int nop1 = StringUtils.nop(a.get(i), b.get(j), 3);
+                if (nop1 < max) {
+                    continue;
+                }
+                int nop = StringUtils.nop(a.get(i), b.get(j), 1);
+                if (nop >= max) {
+                    k += 0.9;
+                    continue;
+                }
+                nop = StringUtils.nop(a.get(i), b.get(j), 2);
+                if (nop >= max) {
+                    k += 0.4;
+                    continue;
+                }
+                k += 0.1;
+            }
+        }
+        return k;
     }
 
 
@@ -248,21 +285,27 @@ public class Main {
 
         double ans = film.kpRating.getOrElse(0.);
 
-        ans += 150 * equals(queryTokens, StringUtils.main(film.title));
+       /* ans += 150 * equals(queryTokens, StringUtils.main(film.title));
         ans += 50 * equals(queryTokens, StringUtils.main(film.year.getOrElse("")));
         ans += 50 * equals(queryTokens, StringUtils.main(film.director.getOrElse("")));
-        ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
-
+        ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));*/
+        ans += 150 * equals1(queryTokens, StringUtils.main(film.title));
+        ans += 50 * equals1(queryTokens, StringUtils.main(film.year.getOrElse("")));
+        ans += 50 * equals1(queryTokens, StringUtils.main(film.director.getOrElse("")));
+        ans += 10 * equals1(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
         for (String country : film.countries) {
-            ans += 10 * equals(queryTokens, StringUtils.main(country));
+            /* ans += 10 * equals(queryTokens, StringUtils.main(country));*/
+            ans += 10 * equals1(queryTokens, StringUtils.main(country));
         }
 
         for (String actor : film.actors) {
-            ans += 30 * equals(queryTokens, StringUtils.main(actor));
+           /*  ans += 30 * equals(queryTokens, StringUtils.main(actor));*/
+            ans += 30 * equals1(queryTokens, StringUtils.main(actor));
         }
 
         for (String genre : film.genres) {
-            ans += 15 * equals(queryTokens, StringUtils.main(genre));
+           /*  ans += 15 * equals(queryTokens, StringUtils.main(genre));*/
+            ans += 15 * equals1(queryTokens, StringUtils.main(genre));
         }
 
         return ans;
