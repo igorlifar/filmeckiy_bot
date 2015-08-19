@@ -88,7 +88,7 @@ public class Main {
                 double max = Math.max(
                         Math.min(a.get(i).length(), b.get(j).length()),
                         Math.max(a.get(i).length(), b.get(j).length()) * 0.8);
-                if (a.get(i).equals(b.get(i))) {
+                if (a.get(i).equals(b.get(j))) {
                     k += 2.0;
                     continue;
                 }
