@@ -35,6 +35,7 @@ public class ShowMoviesMain {
 
             String title = parsed.select("#headerFilm h1.moviename-big").text();
             String rating = parsed.select("#block_rating span.rating_ball").text();
+            String titleEnglish = parsed.select("#headerFilm span[itemprop=\"alternativeHeadline\"]").text();
 
             String year = "";
             String slogan = "";
@@ -85,6 +86,7 @@ public class ShowMoviesMain {
 
             logger.info("{}:", url);
             logger.info("{}", title);
+            logger.info("{}", titleEnglish);
             logger.info("{}", slogan);
             logger.info("{}", year);
             logger.info(countries);

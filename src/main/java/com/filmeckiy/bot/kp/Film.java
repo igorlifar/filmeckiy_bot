@@ -21,6 +21,7 @@ public class Film {
 
     public final long id;
     public final String title;
+    public final String titleEnglish;
 
     public final Option<String> year;
     public final Option<String> director;
@@ -36,6 +37,7 @@ public class Film {
     public Film(
             long id,
             String title,
+            String titleEnglish,
             Option<String> year,
             Option<String> director,
             Option<String> description,
@@ -48,6 +50,7 @@ public class Film {
     {
         this.id = id;
         this.title = title;
+        this.titleEnglish = titleEnglish;
         this.year = year;
         this.director = director;
         this.description = description;
@@ -66,6 +69,8 @@ public class Film {
         String title = parsed.select("#headerFilm h1.moviename-big").text();
         String titleMusor = parsed.select("#headerFilm h1.moviename-big span").text();
         title = title.substring(0, title.length() - titleMusor.length()).trim();
+
+        String titleEnglish = parsed.select("#headerFilm span[itemprop=\"alternativeHeadline\"]").text();
 
         String rating = parsed.select("#block_rating span.rating_ball").text();
         String ratingCount = parsed.select("#block_rating span.ratingCount").text();
@@ -126,7 +131,7 @@ public class Film {
                 : Option.some(Integer.parseInt(ratingCount.replaceAll(" ", "")));
 
         return new Film(
-                id, title, year, director, description, slogan, kpRating, ratingCountInt, actors, genres, countries);
+                id, title, titleEnglish, year, director, description, slogan, kpRating, ratingCountInt, actors, genres, countries);
     }
 
     public static void addFilmtoMongo(Film film) {
@@ -195,6 +200,7 @@ public class Film {
         String ans = "";
         String countriesLine = film.countries.isEmpty() ? "" : ", " + formatStringList(film.countries);
         ans += String.format("%s\n", film.title);
+        ans += String.format("%s\n", film.titleEnglish);
         ans += String.format("%s%s\n", film.year.getOrElse("?"), countriesLine);
         if (!film.genres.isEmpty()) {
             ans += String.format("%s\n", formatStringList(film.genres));
@@ -244,7 +250,7 @@ public class Film {
         org.bson.Document document = new org.bson.Document()
                 .append("_id", film.id)
                 .append("title", film.title);
-
+        document = document.append("titleEnglish", film.titleEnglish);
         if (film.director.isDefined()) {
             document = document.append("director", film.director.get());
         }
@@ -279,6 +285,7 @@ public class Film {
     public static Film getMoviefromDocument(org.bson.Document doc) {
         long id = doc.getLong("_id");
         String title = doc.getString("title");
+        String titleEnglish = doc.getString("titleEnglish");
         String director = doc.getString("director");
         Option<String> directorO = director == null ? Option.none() : Option.some(director);
         String slogan = doc.getString("slogan");
@@ -303,7 +310,7 @@ public class Film {
         for (int i = 0; i < doc.get("countries", List.class).size(); i++) {
             countries.add(doc.get("countries", List.class).get(i).toString());
         }
-        return new Film(id, title, yearO,
+        return new Film(id, title, titleEnglish, yearO,
                 directorO, descriptionO, sloganO, kpRatingO, ratingCountO, actors, genres, countries);
     }
 

@@ -23,7 +23,7 @@ public class StringUtilsTest {
         System.out.println(StringUtils.nop("гарри", "Гарnи", 2));
 
 
-        System.out.println("equals: " + Main.equals(
+        System.out.println("equals: " + Main.equals1(
                 StringUtils.main("гарри поттер дары часть 2"),
                 StringUtils.main("Гарри поттер и дары смерти: часть II")));
 
@@ -31,7 +31,7 @@ public class StringUtilsTest {
         List<String> tokens2 = StringUtils.main("2012");
         System.out.println(tokens1);
         System.out.println(tokens2);
-        System.out.println("equals 2: " + Main.equals(
+        System.out.println("equals 2: " + Main.equals1(
                 tokens1,
                 tokens2));
 
