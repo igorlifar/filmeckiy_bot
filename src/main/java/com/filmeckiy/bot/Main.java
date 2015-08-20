@@ -97,16 +97,18 @@ public class Main {
                     continue;
                 }
                 int nop = StringUtils.nop(a.get(i), b.get(j), 1);
-                if (nop >= max) {
+                if (nop >= max && Math.min(a.get(i).length(), b.get(j).length()) >= 5) {
                     k += 0.5;
                     continue;
                 }
                 nop = StringUtils.nop(a.get(i), b.get(j), 2);
-                if (nop >= max) {
+                if (nop >= max && Math.min(a.get(i).length(), b.get(j).length()) >= 8) {
                     k += 0.25;
                     continue;
                 }
-                k += 0.1;
+                if (Math.min(a.get(i).length(), b.get(j).length()) >= 11) {
+                    k += 0.1;
+                }
             }
         }
         return Math.pow(k, 2);
