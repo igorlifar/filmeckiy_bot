@@ -291,21 +291,21 @@ public class Main {
         ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));*/
         ans += 150 * equals1(queryTokens, StringUtils.main(film.title));
         ans += 50 * equals1(queryTokens, StringUtils.main(film.year.getOrElse("")));
-        ans += 50 * equals1(queryTokens, StringUtils.main(film.director.getOrElse("")));
+        ans += 150 * equals1(queryTokens, StringUtils.main(film.director.getOrElse("")));
         ans += 10 * equals1(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
         for (String country : film.countries) {
             /* ans += 10 * equals(queryTokens, StringUtils.main(country));*/
-            ans += 10 * equals1(queryTokens, StringUtils.main(country));
+            ans += 150 * equals1(queryTokens, StringUtils.main(country));
         }
 
         for (String actor : film.actors) {
            /*  ans += 30 * equals(queryTokens, StringUtils.main(actor));*/
-            ans += 75 * equals1(queryTokens, StringUtils.main(actor));
+            ans += 150 * equals1(queryTokens, StringUtils.main(actor));
         }
 
         for (String genre : film.genres) {
            /*  ans += 15 * equals(queryTokens, StringUtils.main(genre));*/
-            ans += 15 * equals1(queryTokens, StringUtils.main(genre));
+            ans += 150 * equals1(queryTokens, StringUtils.main(genre));
         }
 
         return ans;
