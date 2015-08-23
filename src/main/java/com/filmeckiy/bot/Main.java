@@ -111,7 +111,7 @@ public class Main {
                 }
             }
         }
-        return Math.pow(k / Math.sqrt(a.size()), 2);
+        return Math.pow(k, 2) / Math.sqrt(b.size());
     }
 
 
