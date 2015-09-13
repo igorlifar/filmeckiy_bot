@@ -111,7 +111,7 @@ public class Main {
                 }
             }
         }
-        return Math.pow(k, 1.5) / Math.pow(1. + b.size(), 0.9);
+        return Math.pow(k, 1.3) / Math.pow(1. + b.size(), 1.1);
     }
 
 
@@ -293,7 +293,7 @@ public class Main {
         ans += 10 * equals(queryTokens, StringUtils.main(film.slogan.getOrElse("")));*/
         ans += 150 * equals1(queryTokens, StringUtils.main(film.title));
         ans += 150 * equals1(queryTokens, StringUtils.main(film.titleEnglish));
-        ans += 50 * equals1(queryTokens, StringUtils.main(film.year.getOrElse("")));
+        ans += 65 * equals1(queryTokens, StringUtils.main(film.year.getOrElse("")));
         ans += 50 * equals1(queryTokens, StringUtils.main(film.director.getOrElse("")));
         ans += 10 * equals1(queryTokens, StringUtils.main(film.slogan.getOrElse("")));
         for (String country : film.countries) {
